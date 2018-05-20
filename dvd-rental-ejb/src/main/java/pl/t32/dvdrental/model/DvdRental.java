@@ -22,7 +22,7 @@ public class DvdRental implements Serializable {
     private Dvd dvd;
 
     @ManyToOne
-    private Customer customer;
+    private UserCredentials customer;
 
     public Long getId() {
         return id;
@@ -56,11 +56,11 @@ public class DvdRental implements Serializable {
         this.dvd = dvd;
     }
 
-    public Customer getCustomer() {
+    public UserCredentials getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(UserCredentials customer) {
         this.customer = customer;
     }
 }

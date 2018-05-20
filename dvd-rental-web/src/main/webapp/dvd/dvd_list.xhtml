@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Facelet Title</title>
+</h:head>
+<h:body>
+    <h:form id="dvdsForm">
+        <p:growl id="growl" showDetail="true"/>
+        <p:panel header="Dvds">
+            <p:outputPanel rendered="#{!userBean.logged}">
+                <p:button value="Login" outcome="/login.xhtml" style="margin-right: 10px;"/>
+                <h:outputText value="You are not logged in! Add/Remove options are not available"/>
+
+            </p:outputPanel>
+            <p:outputPanel rendered="#{userBean.logged}">
+                <p:commandButton value="Logout" action="#{loginBean.logout}" style="margin-right: 10px;"/>
+                <h:outputText value="You are logged in as: #{userBean.username}"/>
+            </p:outputPanel>
+        </p:panel>
+
+        <p:dataTable id="dvdTable" value="#{dvdBean.dvds}" var="dvd">
+            <p:column headerText="Title">
+                #{dvd.title}
+            </p:column>
+            <p:column headerText="Author">
+                #{dvd.author}
+            </p:column>
+            <p:column headerText="Price">
+                <h:outputText value="#{dvd.price}">
+                    <f:convertNumber locale="pl-PL" type="currency" currencySymbol="zł"/>
+                </h:outputText>
+            </p:column>
+            <p:column rendered="#{userBean.logged}" headerText="Remove">
+                <p:commandButton icon="ui-icon-trash" title="Remove" action="#{dvdBean.onRemoveDvd(dvd)}"
+                                 update="dvdTable"/>
+            </p:column>
+        </p:dataTable>
+        <p:commandButton rendered="#{userBean.logged}" value="Add dvd" action="#{dvdBean.onDvdAdd()}"
+                         oncomplete="PF('DvdDlg').show()" update=":DvdDlgId"/>
+    </h:form>
+    <p:link value="Link to protected page" outcome="/restricted/restricted.xhtml"/>
+    <p:dialog id="DvdDlgId" widgetVar="DvdDlg" dynamic="true" modal="true">
+        <h:form>
+            <p:panelGrid columns="2">
+                <p:outputLabel value="Title" for="titleId"/>
+                <p:inputText id="titleId" value="#{dvdBean.newDvd.title}" required="true"/>
+                <p:outputLabel value="Author" for="authorId"/>
+                <p:inputText id="authorId" value="#{dvdBean.newDvd.author}" required="true"/>
+                <p:outputLabel value="Price" for="priceId"/>
+                <p:inputText id="priceId" value="#{dvdBean.newDvd.price}" required="true">
+                    <f:convertNumber locale="pl-PL" type="number" maxFractionDigits="2"/>
+                </p:inputText>
+            </p:panelGrid>
+            <p:commandButton value="Cancel" type="button" onclick="PF('DvdDlg').hide()"/>
+            <p:commandButton value="Ok" action="#{dvdBean.onDvdAdded}"
+                             update=":dvdsForm:growl :dvdsForm:dvdTable"/>
+        </h:form>
+    </p:dialog>
+</h:body>
+</html>
