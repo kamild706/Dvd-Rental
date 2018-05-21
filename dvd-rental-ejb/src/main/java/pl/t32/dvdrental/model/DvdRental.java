@@ -18,6 +18,8 @@ public class DvdRental implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date rentedTo;
 
+//    private boolean isRented = false;
+
     @ManyToOne
     private Dvd dvd;
 

@@ -35,4 +35,20 @@ public class UserGroup {
         this.userCredentials = userCredentials;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof UserGroup) {
+            UserGroup group = (UserGroup) obj;
+            return groupname.equals(group.groupname);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "UserGroup{" +
+                "id=" + id +
+                ", groupname='" + groupname + '\'' +
+                '}';
+    }
 }

@@ -15,13 +15,16 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Named
 @ViewScoped
 public class LoginBean implements Serializable {
+
+    public static final Logger LOG = Logger.getLogger(LoginBean.class.getName());
 
     @Inject
     private UserBean userBean;
@@ -58,8 +61,12 @@ public class LoginBean implements Serializable {
     }
 
     public void login() throws IOException {
-        if (userCredentialsDao.findByUsernameAndPassword(username, password) != null) {
-            userBean.setUsername(username);
+        UserCredentials user = userCredentialsDao.findByUsernameAndPassword(username, password);
+        if (user != null) {
+            LOG.fine("Number of groups" + user.getUserGroups().size());
+            if (user.getUserGroups().size() > 0)
+                LOG.fine("Group 1:" + user.getUserGroups().get(0).toString());
+            userBean.setUser(user);
             JSF.redirect("index.xhtml");
         } else {
             JSF.addErrorMessage("Invalid credentials");
@@ -78,7 +85,7 @@ public class LoginBean implements Serializable {
             user.add(group);
 
             userCredentialsDao.save(user);
-            userBean.setUsername(username);
+            userBean.setUser(user);
 
             JSF.redirect("index.xhtml");
         } else {
@@ -90,6 +97,4 @@ public class LoginBean implements Serializable {
         JSF.invalidateSession();
         JSF.redirect("index.xhtml");
     }
-
-
 }

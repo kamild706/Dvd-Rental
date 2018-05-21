@@ -13,7 +13,6 @@ public class Dvd implements Serializable {
     private Long id;
     private String title;
     private String author;
-    private BigDecimal price;
     private String description;
 
     public Long getId() {
@@ -38,14 +37,6 @@ public class Dvd implements Serializable {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 
     public String getDescription() {

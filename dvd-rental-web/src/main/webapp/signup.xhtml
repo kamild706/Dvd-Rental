@@ -8,8 +8,8 @@
     <title>Facelet Title</title>
 </h:head>
 <h:body>
-    <h:form>
-        <p:panel header="Log in">
+    <h:form rendered="#{!userBean.logged}">
+        <p:panel header="Sign up">
             <p:growl id="growl" sticky="true"  life="3000" />
             <h:panelGrid columns="2" cellpadding="5">
                 <p:outputLabel for="username" value="Username:" />
@@ -19,8 +19,9 @@
                 <p:outputLabel for="email" value="Email:" />
                 <p:inputText id="email" value="#{loginBean.email}" required="true" label="email" />
             </h:panelGrid>
-            <p:commandButton value="Login" update="growl" action="#{loginBean.signup}" />
+            <p:commandButton value="Register" update="growl" action="#{loginBean.signup}" />
         </p:panel>
     </h:form>
+    <h:outputText rendered="#{userBean.logged}" value="You are already logged in"/>
 </h:body>
 </html>

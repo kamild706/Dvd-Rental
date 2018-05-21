@@ -16,7 +16,7 @@ public class AuthFilter implements Filter {
     private UserBean userBean;
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
     }
 
     @Override
@@ -26,6 +26,17 @@ public class AuthFilter implements Filter {
         String path = request.getRequestURI().substring(request.getContextPath().length());
         if (path.startsWith("/restricted/")) {
             if (!userBean.isLogged()) {
+                HttpServletResponse response = (HttpServletResponse) servletResponse;
+                response.sendRedirect(request.getContextPath() + "/login.xhtml");
+                return;
+            }
+        }
+        if (path.startsWith("/users/")) {
+            if (!userBean.isAdmin()) {
+                HttpServletResponse response = (HttpServletResponse) servletResponse;
+                response.sendRedirect(request.getContextPath() + "/rejected.html");
+                return;
+            } else if (!userBean.isLogged()) {
                 HttpServletResponse response = (HttpServletResponse) servletResponse;
                 response.sendRedirect(request.getContextPath() + "/login.xhtml");
                 return;

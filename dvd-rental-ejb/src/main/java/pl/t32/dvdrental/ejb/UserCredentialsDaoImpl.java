@@ -1,15 +1,14 @@
-package pl.t32.dvdrental.ejb.jpa;
+package pl.t32.dvdrental.ejb;
 
 
-import pl.t32.dvdrental.ejb.UserCredentialsDao;
 import pl.t32.dvdrental.model.UserCredentials;
 
 import javax.ejb.Stateless;
 
 @Stateless
-public class JpaUserCredentialsDao extends JpaAbstractDao<UserCredentials, Long> implements UserCredentialsDao {
+public class UserCredentialsDaoImpl extends AbstractDaoImpl<UserCredentials, Long> implements UserCredentialsDao {
 
-    public JpaUserCredentialsDao() {
+    public UserCredentialsDaoImpl() {
         super(UserCredentials.class);
     }
 

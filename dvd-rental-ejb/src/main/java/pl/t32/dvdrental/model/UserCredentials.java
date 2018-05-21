@@ -62,4 +62,10 @@ public class UserCredentials {
     public List<UserGroup> getUserGroups() {
         return userGroups;
     }
+
+    public boolean isAdmin() {
+        UserGroup group = new UserGroup();
+        group.setGroupname("ADMIN");
+        return userGroups.contains(group);
+    }
 }

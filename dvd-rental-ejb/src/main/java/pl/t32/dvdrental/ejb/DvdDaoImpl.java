@@ -1,6 +1,5 @@
-package pl.t32.dvdrental.ejb.jpa;
+package pl.t32.dvdrental.ejb;
 
-import pl.t32.dvdrental.ejb.DvdDao;
 import pl.t32.dvdrental.model.Dvd;
 
 import javax.annotation.sql.DataSourceDefinition;
@@ -18,8 +17,8 @@ import javax.ejb.Stateless;
         properties = {"connectionAttributes=;create=true"}
 )
 @Stateless
-public class JpaDvdDao extends JpaAbstractDao<Dvd, Long> implements DvdDao {
-    public JpaDvdDao() {
+public class DvdDaoImpl extends AbstractDaoImpl<Dvd, Long> implements DvdDao {
+    public DvdDaoImpl() {
         super(Dvd.class);
     }
 }
