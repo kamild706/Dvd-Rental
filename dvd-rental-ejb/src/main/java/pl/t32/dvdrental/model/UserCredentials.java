@@ -59,6 +59,10 @@ public class UserCredentials {
         this.userGroups.add(userGroup);
     }
 
+    public void remove(UserGroup userGroup) {
+        this.userGroups.remove(userGroup);
+    }
+
     public List<UserGroup> getUserGroups() {
         return userGroups;
     }
@@ -67,5 +71,15 @@ public class UserCredentials {
         UserGroup group = new UserGroup();
         group.setGroupname("ADMIN");
         return userGroups.contains(group);
+    }
+
+    @Override
+    public String toString() {
+        return "UserCredentials{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", userGroups=" + userGroups +
+                '}';
     }
 }

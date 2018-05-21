@@ -24,9 +24,9 @@
             </p:column>
             <p:column headerText="Admin privilages">
                 <p:commandButton rendered="#{!user.isAdmin()}" title="Add admin privilages"
-                                 action="#{userManageBean.addAdminPrivileges(user)}" update="userTable"/>
+                                 action="#{userManageBean.handleAddAdminPrivileges(user)}" update="userTable"/>
                 <p:commandButton rendered="#{user.isAdmin()}" title="Revoke admin privilages"
-                                 action="#{userManageBean.revokeAdminPrivileges(user)}" update="userTable"/>
+                                 action="#{userManageBean.handleRevokeAdminPrivileges(user)}" update="userTable"/>
             </p:column>
         </p:dataTable>
     </h:form>

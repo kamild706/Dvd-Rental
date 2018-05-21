@@ -63,12 +63,11 @@ public class LoginBean implements Serializable {
     public void login() throws IOException {
         UserCredentials user = userCredentialsDao.findByUsernameAndPassword(username, password);
         if (user != null) {
-            LOG.fine("Number of groups" + user.getUserGroups().size());
-            if (user.getUserGroups().size() > 0)
-                LOG.fine("Group 1:" + user.getUserGroups().get(0).toString());
             userBean.setUser(user);
+            LOG.info("User " + user.getUsername() + " logged in");
             JSF.redirect("index.xhtml");
         } else {
+            LOG.info("Login unsuccessful, wrong credentials provided");
             JSF.addErrorMessage("Invalid credentials");
         }
     }
@@ -85,9 +84,7 @@ public class LoginBean implements Serializable {
             user.add(group);
 
             userCredentialsDao.save(user);
-            userBean.setUser(user);
-
-            JSF.redirect("index.xhtml");
+            login();
         } else {
             JSF.addErrorMessage("This username is taken");
         }

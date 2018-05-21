@@ -29,21 +29,31 @@ public class UserManageBean implements Serializable {
         dao.remove(uc.getId());
     }
 
+    public void handleAddAdminPrivileges(UserCredentials uc) {
+        addAdminPrivileges(uc);
+        dao.update(uc);
+    }
+
     public void addAdminPrivileges(UserCredentials uc) {
         if (!uc.isAdmin()) {
             UserGroup group = new UserGroup();
             group.setGroupname("ADMIN");
             uc.add(group);
 
-            dao.update(uc);
+            LOG.info("User " + uc.getUsername() + " added to ADMIN group");
         }
+    }
+
+    public void handleRevokeAdminPrivileges(UserCredentials uc) {
+        revokeAdminPrivileges(uc);
+        dao.update(uc);
     }
 
     public void revokeAdminPrivileges(UserCredentials uc) {
         UserGroup group = new UserGroup();
         group.setGroupname("ADMIN");
-        uc.getUserGroups().remove(group);
+        uc.remove(group);
 
-        dao.update(uc);
+        LOG.info("User " + uc.getUsername() + " removed from ADMIN group");
     }
 }

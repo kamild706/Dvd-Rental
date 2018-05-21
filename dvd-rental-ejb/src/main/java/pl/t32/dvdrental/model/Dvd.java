@@ -46,4 +46,14 @@ public class Dvd implements Serializable {
     public void setDescription(String desc) {
         this.description = desc;
     }
+
+    @Override
+    public String toString() {
+        return "Dvd{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
