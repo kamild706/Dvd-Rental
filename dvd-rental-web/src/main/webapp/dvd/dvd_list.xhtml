@@ -28,29 +28,40 @@
                 #{dvd.title}
             </p:column>
             <p:column headerText="Author">
-                #{dvd.author}
+                #{dvd.director}
             </p:column>
             <p:column headerText="Description">
                 #{dvd.description}
             </p:column>
-            <p:column rendered="#{userBean.isAdmin()}" headerText="Remove">
-                <p:commandButton icon="ui-icon-trash" title="Remove" action="#{dvdBean.onRemoveDvd(dvd)}"
-                                 update="dvdTable"/>
+            <p:column rendered="#{userBean.isLogged()}" headerText="State">
+                <h:outputText rendered="#{dvd.getState() == 'RESERVED'}" value="Reserved"/>
+                <h:outputText rendered="#{dvd.getState() == 'AVAILABLE'}" value="Available"/>
+                <h:outputText rendered="#{dvd.getState() == 'RENTED'}" value="Rented"/>
+                <h:outputText rendered="#{dvd.getState() == 'RENTED_AND_RESERVED'}" value="Rented, Reserved"/>
             </p:column>
-            <!--<p:column rendered="#{userBean.isLogged()}" headerText="Rent">
-                <p:commandButton icon="ui-icon-trash" title="Rent" action="#{dvdRentalBean.onRentalAdd()}"
+            <p:column rendered="#{userBean.isAdmin()}" headerText="Manage">
+                <p:commandButton icon="ui-icon-trash" title="Remove" action="#{dvdBean.onDvdRemove(dvd)}"
+                                 update="dvdTable"/>
+                <p:commandButton icon="ui-icon-pencil" title="Edit" action="#{dvdBean.onDvdEdit(dvd)}"
+                                 oncomplete="PF('DvdEditDlg').show()" update="DvdEditId"/>
+            </p:column>
+            <p:column rendered="#{userBean.isLogged()}" headerText="Rent">
+                <p:commandButton icon="ui-icon-cart" title="Rent" action="#{dvdRentalBean.onRentalAdd(dvd)}"
                                  oncomplete="PF('RentalDlg').show()" update=":RentalDlgId"/>
-            </p:column>-->
+            </p:column>
         </p:dataTable>
+        <p:commandButton rendered="#{userBean.isAdmin()}" value="Add dvd" action="#{dvdBean.onDvdAdd()}"
+                         oncomplete="PF('DvdDlg').show()" update=":DvdDlgId"/>
     </h:form>
-    <p:link value="Link to protected page" outcome="/restricted/restricted.xhtml"/>
+    <p:link value="Link to Admin page" outcome="/users/users_list.xhtml"/>
+
     <p:dialog id="DvdDlgId" widgetVar="DvdDlg" dynamic="true" modal="true">
         <h:form>
             <p:panelGrid columns="2">
                 <p:outputLabel value="Title" for="titleId"/>
                 <p:inputText id="titleId" value="#{dvdBean.newDvd.title}" required="true"/>
                 <p:outputLabel value="Author" for="authorId"/>
-                <p:inputText id="authorId" value="#{dvdBean.newDvd.author}" required="true"/>
+                <p:inputText id="authorId" value="#{dvdBean.newDvd.director}" required="true"/>
                 <p:outputLabel value="Description" for="descriptionId"/>
                 <p:inputText id="descriptionId" value="#{dvdBean.newDvd.description}" required="false"/>
             </p:panelGrid>
@@ -59,17 +70,32 @@
                              update=":dvdsForm:growl :dvdsForm:dvdTable"/>
         </h:form>
     </p:dialog>
-    <!--<p:dialog id="RentalDlgId" widgetVar="RentalDlg" dynamic="true" modal="true">
+    <p:dialog id="DvdEditId" widgetVar="DvdEditDlg" dynamic="true" modal="true">
+        <h:form>
+            <p:panelGrid columns="2">
+                <p:outputLabel value="Title" for="title1Id"/>
+                <p:inputText id="title1Id" value="#{dvdBean.newDvd.title}" required="true"/>
+                <p:outputLabel value="Author" for="author1Id"/>
+                <p:inputText id="author1Id" value="#{dvdBean.newDvd.director}" required="true"/>
+                <p:outputLabel value="Description" for="description1Id"/>
+                <p:inputText id="description1Id" value="#{dvdBean.newDvd.description}" required="false"/>
+            </p:panelGrid>
+            <p:commandButton value="Cancel" type="button" onclick="PF('DvdEditDlg').hide()"/>
+            <p:commandButton value="Ok" action="#{dvdBean.onDvdEdited}"
+                             update=":dvdsForm:growl :dvdsForm:dvdTable"/>
+        </h:form>
+    </p:dialog>
+    <p:dialog id="RentalDlgId" widgetVar="RentalDlg" dynamic="true" modal="true">
         <h:form>
             <p:panelGrid columns="2">
                 <h:outputText value="Title"/>
                 <h:outputText value="#{dvdRentalBean.newRental.dvd.title}"/>
                 <p:outputLabel value="Rent since" for="rentSince"/>
-                <p:inputText id="RentSince" value="#{dvdRentalBean.newRental.rentedSince}" required="true">
+                <p:inputText id="rentSince" value="#{dvdRentalBean.newRental.rentedSince}" required="true">
                     <f:convertDateTime pattern="dd/MM/yy HH:mm"/>
                 </p:inputText>
                 <p:outputLabel value="Rent to" for="rentTo"/>
-                <p:inputText id="RentTo" value="#{dvdRentalBean.newRental.rentedTo}" required="true">
+                <p:inputText id="rentTo" value="#{dvdRentalBean.newRental.rentedTo}" required="true">
                     <f:convertDateTime pattern="dd/MM/yy HH:mm"/>
                 </p:inputText>
             </p:panelGrid>
@@ -77,6 +103,6 @@
             <p:commandButton value="Ok" action="#{dvdRentalBean.onRentalAdded}"
                              update=":dvdsForm:growl :dvdsForm:dvdTable"/>
         </h:form>
-    </p:dialog>-->
+    </p:dialog>
 </h:body>
 </html>

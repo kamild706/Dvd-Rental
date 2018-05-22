@@ -18,13 +18,14 @@ public class DvdRental implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date rentedTo;
 
-//    private boolean isRented = false;
-
     @ManyToOne
     private Dvd dvd;
 
     @ManyToOne
     private UserCredentials customer;
+
+    @Enumerated(EnumType.STRING)
+    private RentalState state = RentalState.RESERVED;
 
     public Long getId() {
         return id;
@@ -64,5 +65,13 @@ public class DvdRental implements Serializable {
 
     public void setCustomer(UserCredentials customer) {
         this.customer = customer;
+    }
+
+    public RentalState getState() {
+        return state;
+    }
+
+    public void setState(RentalState state) {
+        this.state = state;
     }
 }

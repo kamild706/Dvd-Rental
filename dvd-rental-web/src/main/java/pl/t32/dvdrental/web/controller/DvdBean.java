@@ -23,12 +23,21 @@ public class DvdBean implements Serializable {
         return dao.findAll();
     }
 
-    public void onRemoveDvd(Dvd d) {
+    public void onDvdRemove(Dvd d) {
         dao.remove(d.getId());
     }
 
     public void onDvdAdd() {
         newDvd = new Dvd();
+    }
+
+    public void onDvdEdit(Dvd dvd) {
+        newDvd = dvd;
+    }
+
+    public void onDvdEdited() {
+        dao.update(newDvd);
+        RequestContext.getCurrentInstance().execute("PF('DvdEditDlg').hide()");
     }
 
     public void onDvdAdded() {
