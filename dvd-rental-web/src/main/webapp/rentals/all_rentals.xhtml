@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Facelet Title</title>
+</h:head>
+<h:body>
+    <h:form id="rentalsForm" rendered="#{userBean.admin}">
+        <p:growl id="growl" showDetail="true"/>
+        <p:dataTable id="rentalTable" value="#{dvdRentalBean.getRentals()}" var="rental">
+            <p:column headerText="Movie title">
+                #{rental.dvd.title}
+            </p:column>
+            <p:column headerText="Rented since">
+                #{rental.rentedSince}
+            </p:column>
+            <p:column headerText="Rented to">
+                #{rental.rentedTo}
+            </p:column>
+            <p:column headerText="Customer">
+                #{rental.customer.username}
+            </p:column>
+            <p:column headerText="State">
+                #{rental.state}
+            </p:column>
+            <p:column headerText="Manage">
+                <p:commandButton rendered="#{rental.state == 'RESERVED'}" value="Issue Dvd" title="Issue"
+                                 action="#{dvdRentalBean.issueDvd(rental)}"
+                                 update=":rentalsForm:growl :rentalsForm:rentalTable"/>
+                <p:commandButton rendered="#{rental.state == 'RENTED'}" value="Return Dvd" title="Return"
+                                 action="#{dvdRentalBean.returnDvd(rental)}"
+                                 update=":rentalsForm:growl :rentalsForm:rentalTable"/>
+            </p:column>
+            <p:column headerText="Remove">
+                <p:commandButton icon="ui-icon-trash" title="Remove" action="#{dvdRentalBean.onRentalRemove(rental)}"
+                                 oncomplete="PF('RentalRemoveDlg').show()" update="RentalRemoveId"/>
+
+            </p:column>
+        </p:dataTable>
+    </h:form>
+    <h:outputText rendered="#{!userBean.logged}" value="You must be logged in"/>
+
+    <p:dialog id="RentalRemoveId" widgetVar="RentalRemoveDlg" dynamic="true" modal="true">
+        <h:form>
+            <h:panelGroup layout="block">
+                <h:outputText value="Do you want to delete this?"/>
+                <p:commandButton value="Cancel" type="button" onclick="PF('RentalRemoveDlg').hide()"/>
+                <p:commandButton value="Ok" action="#{dvdRentalBean.onRentalRemoved}"
+                                 update=":rentalsForm:growl :rentalsForm:rentalTable"/>
+            </h:panelGroup>
+        </h:form>
+    </p:dialog>
+</h:body>
+</html>

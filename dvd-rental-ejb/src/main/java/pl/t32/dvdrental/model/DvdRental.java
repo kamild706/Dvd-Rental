@@ -5,17 +5,17 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@NamedQuery(name="DvdRental.findAll", query="select d from DvdRental d")
+@NamedQuery(name="DvdRental.findByUser", query="select d from DvdRental d where d.customer = :customer")
 public class DvdRental implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date rentedSince;
 
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date rentedTo;
 
     @ManyToOne

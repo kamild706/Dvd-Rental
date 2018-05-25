@@ -8,11 +8,16 @@ package pl.t32.dvdrental.ejb;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.TimeZone;
 
 public abstract class AbstractDaoImpl<T, ID> {
     @PersistenceContext(unitName = "pl.t32.dvd-rental-ejb_ejb_1.0PU")
     protected EntityManager em;
     private Class<T> entityClass;
+
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
 
     public AbstractDaoImpl() {
     }
@@ -20,7 +25,6 @@ public abstract class AbstractDaoImpl<T, ID> {
     public AbstractDaoImpl(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
-
 
     public void save(T t) {
         em.persist(t);

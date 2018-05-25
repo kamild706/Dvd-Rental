@@ -5,12 +5,15 @@ import pl.t32.dvdrental.ejb.DvdDao;
 import pl.t32.dvdrental.ejb.DvdRentalDao;
 import pl.t32.dvdrental.model.Dvd;
 import pl.t32.dvdrental.model.DvdRental;
+import pl.t32.dvdrental.model.RentalState;
+import pl.t32.dvdrental.model.UserCredentials;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.List;
 
 @Named
 @ViewScoped
@@ -40,11 +43,39 @@ public class DvdRentalBean implements Serializable {
         RequestContext.getCurrentInstance().execute("PF('RentalDlg').hide()");
     }
 
+    public void onRentalRemove(DvdRental rental) {
+        newRental = rental;
+    }
+
+    public void onRentalRemoved() {
+        dao.remove(newRental.getId());
+        newRental.getDvd().removeRental(newRental);
+        RequestContext.getCurrentInstance().execute("PF('RentalRemoveDlg').hide()");
+    }
+
+    public List<DvdRental> getUserRentals(UserCredentials user) {
+        return dao.findByUser(user);
+    }
+
     public DvdRental getNewRental() {
         return newRental;
     }
 
     public void setNewRental(DvdRental newRental) {
         this.newRental = newRental;
+    }
+
+    public List<DvdRental> getRentals() {
+        return dao.findAll();
+    }
+
+    public void issueDvd(DvdRental rental) {
+        rental.setState(RentalState.RENTED);
+        dao.update(rental);
+    }
+
+    public void returnDvd(DvdRental rental) {
+        rental.setState(RentalState.RETURNED);
+        dao.update(rental);
     }
 }
