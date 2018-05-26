@@ -3,6 +3,7 @@ package pl.t32.dvdrental.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -90,6 +91,29 @@ public class Dvd implements Serializable {
         if (isReserved)
             return DvdState.RESERVED;
         return DvdState.AVAILABLE;
+    }
+
+    public boolean canBeRented(UserCredentials user) {
+        if (getState() == DvdState.RESERVED || getState() == DvdState.RENTED_AND_RESERVED)
+            return false;
+        if (getState() == DvdState.AVAILABLE)
+            return true;
+        for (DvdRental rental : getRentals()) {
+            if (rental.getState() == RentalState.RENTED && rental.getCustomer().equals(user))
+                return false;
+        }
+        return true;
+    }
+
+    public Date getAvailableSince() {
+        Date date = new Date();
+        for (DvdRental rental : getRentals()) {
+            if (rental.getState() != RentalState.RETURNED && rental.getRentedTo().after(date)) {
+                date = rental.getRentedTo();
+            }
+        }
+
+        return date;
     }
 
     @Override

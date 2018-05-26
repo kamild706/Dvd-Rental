@@ -82,4 +82,14 @@ public class UserCredentials {
                 ", userGroups=" + userGroups +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj instanceof UserCredentials) {
+            UserCredentials uc = (UserCredentials) obj;
+            return uc.getUsername().equals(this.getUsername());
+        }
+        return false;
+    }
 }

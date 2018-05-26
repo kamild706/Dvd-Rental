@@ -28,12 +28,14 @@
                 #{rental.state}
             </p:column>
             <p:column headerText="Manage">
-                <p:commandButton rendered="#{rental.state == 'RESERVED'}" value="Issue Dvd" title="Issue"
+                <p:commandButton rendered="#{rental.canBeIssued()}" value="Issue Dvd" title="Issue"
                                  action="#{dvdRentalBean.issueDvd(rental)}"
                                  update=":rentalsForm:growl :rentalsForm:rentalTable"/>
-                <p:commandButton rendered="#{rental.state == 'RENTED'}" value="Return Dvd" title="Return"
+                <p:commandButton rendered="#{rental.canBeReturned()}" value="Return Dvd" title="Return"
                                  action="#{dvdRentalBean.returnDvd(rental)}"
                                  update=":rentalsForm:growl :rentalsForm:rentalTable"/>
+                <h:outputText rendered="#{!rental.canBeReturned() and !rental.canBeIssued()}"
+                              value="This order cannot be realised now"/>
             </p:column>
             <p:column headerText="Remove">
                 <p:commandButton icon="ui-icon-trash" title="Remove" action="#{dvdRentalBean.onRentalRemove(rental)}"
@@ -42,7 +44,7 @@
             </p:column>
         </p:dataTable>
     </h:form>
-    <h:outputText rendered="#{!userBean.logged}" value="You must be logged in"/>
+    <h:outputText rendered="#{!userBean.admin}" value="You must be admin"/>
 
     <p:dialog id="RentalRemoveId" widgetVar="RentalRemoveDlg" dynamic="true" modal="true">
         <h:form>

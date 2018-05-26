@@ -74,4 +74,16 @@ public class DvdRental implements Serializable {
     public void setState(RentalState state) {
         this.state = state;
     }
+
+    public boolean canBeIssued() {
+        if (state == RentalState.RENTED || state == RentalState.RETURNED)
+            return false;
+        if (dvd.getState() == DvdState.AVAILABLE || dvd.getState() == DvdState.RESERVED)
+            return true;
+        return false;
+    }
+
+    public boolean canBeReturned() {
+        return state == RentalState.RENTED;
+    }
 }

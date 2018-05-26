@@ -39,6 +39,9 @@
                 <h:outputText rendered="#{dvd.getState() == 'RENTED'}" value="Rented"/>
                 <h:outputText rendered="#{dvd.getState() == 'RENTED_AND_RESERVED'}" value="Rented, Reserved"/>
             </p:column>
+            <p:column headerText="Available since">
+                #{dvd.getAvailableSince()}
+            </p:column>
             <p:column rendered="#{userBean.isAdmin()}" headerText="Manage">
                 <p:commandButton icon="ui-icon-trash" title="Remove" action="#{dvdBean.onDvdRemove(dvd)}"
                                  oncomplete="PF('DvdRemoveDlg').show()" update="DvdRemoveId"/>
@@ -46,11 +49,16 @@
                                  oncomplete="PF('DvdEditDlg').show()" update="DvdEditId"/>
             </p:column>
             <p:column rendered="#{userBean.isLogged()}" headerText="Rent">
-                <p:commandButton rendered="#{dvd.getState() == 'AVAILABLE' or dvd.getState() == 'RENTED'}"
+                <!--<p:commandButton rendered="#{dvd.getState() == 'AVAILABLE' or dvd.getState() == 'RENTED'}"
                                  icon="ui-icon-cart" title="Rent" action="#{dvdRentalBean.onRentalAdd(dvd)}"
                                  oncomplete="PF('RentalDlg').show()" update=":RentalDlgId"/>
                 <h:outputText rendered="#{dvd.getState() == 'RESERVED' or dvd.getState() == 'RENTED_AND_RESERVED'}"
-                              value="This Dvd cannot be rented"/>
+                              value="This Dvd cannot be rented"/>-->
+                <p:commandButton rendered="#{dvd.canBeRented(userBean.user)}"
+                                 icon="ui-icon-cart" title="Rent" action="#{dvdRentalBean.onRentalAdd(dvd)}"
+                                 oncomplete="PF('RentalDlg').show()" update=":RentalDlgId"/>
+                <h:outputText rendered="#{!dvd.canBeRented(userBean.user)}"
+                              value="This Dvd is unavailable now"/>
             </p:column>
         </p:dataTable>
         <p:commandButton rendered="#{userBean.isAdmin()}" value="Add dvd" action="#{dvdBean.onDvdAdd()}"

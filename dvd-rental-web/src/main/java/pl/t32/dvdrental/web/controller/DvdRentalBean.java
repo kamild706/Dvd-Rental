@@ -7,12 +7,14 @@ import pl.t32.dvdrental.model.Dvd;
 import pl.t32.dvdrental.model.DvdRental;
 import pl.t32.dvdrental.model.RentalState;
 import pl.t32.dvdrental.model.UserCredentials;
+import pl.t32.dvdrental.web.util.JSF;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Named
@@ -35,8 +37,27 @@ public class DvdRentalBean implements Serializable {
         newRental.setDvd(dvd);
     }
 
+    public boolean isRentalValid() {
+        Dvd dvd = newRental.getDvd();
+        if (newRental.getRentedSince().after(newRental.getRentedTo()))
+            return false;
+
+        if ((new Date()).after(newRental.getRentedSince()))
+            return false;
+
+        for (DvdRental rental : dvd.getRentals()) {
+            if (rental.getState() != RentalState.RETURNED && rental.getRentedTo().after(newRental.getRentedSince()))
+                return false;
+        }
+        return true;
+    }
+
     public void onRentalAdded() {
         newRental.setCustomer(userBean.getUser());
+        if (!isRentalValid()) {
+            JSF.addErrorMessage("Given dates are incorrect");
+            return;
+        }
         newRental.getDvd().addRental(newRental);
         dao.save(newRental);
         dvdDao.update(newRental.getDvd());

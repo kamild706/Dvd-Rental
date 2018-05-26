@@ -2,7 +2,7 @@ package pl.t32.dvdrental.web.controller;
 
 import org.primefaces.context.RequestContext;
 import pl.t32.dvdrental.ejb.DvdDao;
-import pl.t32.dvdrental.model.Dvd;
+import pl.t32.dvdrental.model.*;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
@@ -56,5 +56,17 @@ public class DvdBean implements Serializable {
 
     public void setNewDvd(Dvd newDvd) {
         this.newDvd = newDvd;
+    }
+
+    public boolean canBeRented(UserCredentials user) {
+        if (newDvd.getState() == DvdState.RESERVED || newDvd.getState() == DvdState.RENTED_AND_RESERVED)
+            return false;
+        if (newDvd.getState() == DvdState.AVAILABLE)
+            return true;
+        for (DvdRental rental : newDvd.getRentals()) {
+            if (rental.getState() == RentalState.RENTED && rental.getCustomer().equals(user))
+                return false;
+        }
+        return true;
     }
 }

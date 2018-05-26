@@ -25,7 +25,8 @@
                 #{rental.state}
             </p:column>
             <p:column headerText="Remove">
-                <p:commandButton icon="ui-icon-trash" title="Remove" action="#{dvdRentalBean.onRentalRemove(rental)}"
+                <p:commandButton rendered="#{rental.getState() != 'RENTED'}" icon="ui-icon-trash" title="Remove"
+                                 action="#{dvdRentalBean.onRentalRemove(rental)}"
                                  oncomplete="PF('RentalRemoveDlg').show()" update="RentalRemoveId"/>
             </p:column>
         </p:dataTable>
