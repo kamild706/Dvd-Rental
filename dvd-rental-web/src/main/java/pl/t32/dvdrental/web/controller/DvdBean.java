@@ -57,16 +57,4 @@ public class DvdBean implements Serializable {
     public void setNewDvd(Dvd newDvd) {
         this.newDvd = newDvd;
     }
-
-    public boolean canBeRented(UserCredentials user) {
-        if (newDvd.getState() == DvdState.RESERVED || newDvd.getState() == DvdState.RENTED_AND_RESERVED)
-            return false;
-        if (newDvd.getState() == DvdState.AVAILABLE)
-            return true;
-        for (DvdRental rental : newDvd.getRentals()) {
-            if (rental.getState() == RentalState.RENTED && rental.getCustomer().equals(user))
-                return false;
-        }
-        return true;
-    }
 }

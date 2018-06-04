@@ -34,13 +34,8 @@
                 #{dvd.description}
             </p:column>
             <p:column rendered="#{userBean.isLogged()}" headerText="State">
-                <h:outputText rendered="#{dvd.getState() == 'RESERVED'}" value="Reserved"/>
                 <h:outputText rendered="#{dvd.getState() == 'AVAILABLE'}" value="Available"/>
                 <h:outputText rendered="#{dvd.getState() == 'RENTED'}" value="Rented"/>
-                <h:outputText rendered="#{dvd.getState() == 'RENTED_AND_RESERVED'}" value="Rented, Reserved"/>
-            </p:column>
-            <p:column headerText="Available since">
-                #{dvd.getAvailableSince()}
             </p:column>
             <p:column rendered="#{userBean.isAdmin()}" headerText="Manage">
                 <p:commandButton icon="ui-icon-trash" title="Remove" action="#{dvdBean.onDvdRemove(dvd)}"
@@ -49,16 +44,10 @@
                                  oncomplete="PF('DvdEditDlg').show()" update="DvdEditId"/>
             </p:column>
             <p:column rendered="#{userBean.isLogged()}" headerText="Rent">
-                <!--<p:commandButton rendered="#{dvd.getState() == 'AVAILABLE' or dvd.getState() == 'RENTED'}"
+                <p:commandButton rendered="#{dvd.canUserRent(userBean.user)}"
                                  icon="ui-icon-cart" title="Rent" action="#{dvdRentalBean.onRentalAdd(dvd)}"
                                  oncomplete="PF('RentalDlg').show()" update=":RentalDlgId"/>
-                <h:outputText rendered="#{dvd.getState() == 'RESERVED' or dvd.getState() == 'RENTED_AND_RESERVED'}"
-                              value="This Dvd cannot be rented"/>-->
-                <p:commandButton rendered="#{dvd.canBeRented(userBean.user)}"
-                                 icon="ui-icon-cart" title="Rent" action="#{dvdRentalBean.onRentalAdd(dvd)}"
-                                 oncomplete="PF('RentalDlg').show()" update=":RentalDlgId"/>
-                <h:outputText rendered="#{!dvd.canBeRented(userBean.user)}"
-                              value="This Dvd is unavailable now"/>
+                <h:outputText rendered="#{!dvd.canUserRent(userBean.user)}" value="You already rented this Dvd"/>
             </p:column>
         </p:dataTable>
         <p:commandButton rendered="#{userBean.isAdmin()}" value="Add dvd" action="#{dvdBean.onDvdAdd()}"
@@ -98,16 +87,33 @@
     </p:dialog>
     <p:dialog id="RentalDlgId" widgetVar="RentalDlg" dynamic="true" modal="true">
         <h:form>
+            <p:dataTable id="rentalsTable" rendered="#{not empty dvdRentalBean.getPendingRentals()}"
+                         value="#{dvdRentalBean.getPendingRentals()}" var="rental">
+                <p:column headerText="Time since">
+                    #{rental.rentedSince}
+                </p:column>
+                <p:column headerText="Time to">
+                    #{rental.rentedTo}
+                </p:column>
+                <p:column headerText="Status">
+                    Unavailable
+                </p:column>
+            </p:dataTable>
+            <h:outputText value="Pick any available date"/>
             <p:panelGrid columns="2">
                 <h:outputText value="Title"/>
                 <h:outputText value="#{dvdRentalBean.newRental.dvd.title}"/>
                 <p:outputLabel value="Rent since" for="rentSince"/>
                 <p:inputText id="rentSince" value="#{dvdRentalBean.newRental.rentedSince}" required="true">
-                    <f:convertDateTime pattern="dd/MM/yy HH:mm"/>
+                    <f:converter converterId="localDateTimeConverter"/>
+                    <f:attribute name="pattern" value="dd/MM/yy HH:mm"/>
+                    <f:attribute name="timeZone" value="Europe/Warsaw"/>
                 </p:inputText>
                 <p:outputLabel value="Rent to" for="rentTo"/>
                 <p:inputText id="rentTo" value="#{dvdRentalBean.newRental.rentedTo}" required="true">
-                    <f:convertDateTime pattern="dd/MM/yy HH:mm"/>
+                    <f:converter converterId="localDateTimeConverter"/>
+                    <f:attribute name="pattern" value="dd/MM/yy HH:mm"/>
+                    <f:attribute name="timeZone" value="Europe/Warsaw"/>
                 </p:inputText>
             </p:panelGrid>
             <p:commandButton value="Cancel" type="button" onclick="PF('RentalDlg').hide()"/>

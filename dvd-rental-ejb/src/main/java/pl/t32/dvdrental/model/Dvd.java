@@ -69,51 +69,13 @@ public class Dvd implements Serializable {
     }
 
     public DvdState getState() {
-        boolean isReserved = false;
-        boolean isRented = false;
-
-        Logger logger = Logger.getLogger(Dvd.class.getName());
-        logger.info("Rentals size: " + rentals.size());
-        for (DvdRental rental : rentals) {
-            logger.info("Rental state: " + rental.getState());
-            if (rental.getState() == RentalState.RENTED) {
-                isRented = true;
-            }
-            else if (rental.getState() == RentalState.RESERVED) {
-                isReserved = true;
-            }
-        }
-
-        if (isRented && isReserved)
-            return DvdState.RENTED_AND_RESERVED;
-        if (isRented)
-            return DvdState.RENTED;
-        if (isReserved)
-            return DvdState.RESERVED;
-        return DvdState.AVAILABLE;
+        boolean rented = getRentals().stream().anyMatch(r -> r.getState() == RentalState.RENTED);
+        return rented ? DvdState.RENTED : DvdState.AVAILABLE;
     }
 
-    public boolean canBeRented(UserCredentials user) {
-        if (getState() == DvdState.RESERVED || getState() == DvdState.RENTED_AND_RESERVED)
-            return false;
-        if (getState() == DvdState.AVAILABLE)
-            return true;
-        for (DvdRental rental : getRentals()) {
-            if (rental.getState() == RentalState.RENTED && rental.getCustomer().equals(user))
-                return false;
-        }
-        return true;
-    }
-
-    public Date getAvailableSince() {
-        Date date = new Date();
-        for (DvdRental rental : getRentals()) {
-            if (rental.getState() != RentalState.RETURNED && rental.getRentedTo().after(date)) {
-                date = rental.getRentedTo();
-            }
-        }
-
-        return date;
+    public boolean canUserRent(UserCredentials user) {
+        return getRentals().stream()
+                .noneMatch(r -> r.getCustomer().equals(user) && r.getState() != RentalState.RETURNED);
     }
 
     @Override

@@ -28,13 +28,13 @@
                 #{rental.state}
             </p:column>
             <p:column headerText="Manage">
-                <p:commandButton rendered="#{rental.canBeIssued()}" value="Issue Dvd" title="Issue"
+                <p:commandButton rendered="#{dvdRentalBean.canBeIssued(rental)}" value="Issue Dvd" title="Issue"
                                  action="#{dvdRentalBean.issueDvd(rental)}"
                                  update=":rentalsForm:growl :rentalsForm:rentalTable"/>
-                <p:commandButton rendered="#{rental.canBeReturned()}" value="Return Dvd" title="Return"
+                <p:commandButton rendered="#{dvdRentalBean.canBeReturned(rental)}" value="Return Dvd" title="Return"
                                  action="#{dvdRentalBean.returnDvd(rental)}"
                                  update=":rentalsForm:growl :rentalsForm:rentalTable"/>
-                <h:outputText rendered="#{!rental.canBeReturned() and !rental.canBeIssued()}"
+                <h:outputText rendered="#{!dvdRentalBean.canBeReturned(rental) and !dvdRentalBean.canBeIssued(rental)}"
                               value="This order cannot be realised now"/>
             </p:column>
             <p:column headerText="Remove">

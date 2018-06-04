@@ -16,7 +16,7 @@ public abstract class AbstractDaoImpl<T, ID> {
     private Class<T> entityClass;
 
     static {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Warsaw"));
     }
 
     public AbstractDaoImpl() {

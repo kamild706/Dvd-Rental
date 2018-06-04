@@ -25,9 +25,10 @@
                 #{rental.state}
             </p:column>
             <p:column headerText="Remove">
-                <p:commandButton rendered="#{rental.getState() != 'RENTED'}" icon="ui-icon-trash" title="Remove"
+                <p:commandButton rendered="#{rental.getState() == 'RESERVED'}" icon="ui-icon-trash" title="Remove"
                                  action="#{dvdRentalBean.onRentalRemove(rental)}"
                                  oncomplete="PF('RentalRemoveDlg').show()" update="RentalRemoveId"/>
+                <h:outputText rendered="#{rental.getState() == 'RENTED'}" value="You cannot delete rented Dvd"/>
             </p:column>
         </p:dataTable>
     </h:form>

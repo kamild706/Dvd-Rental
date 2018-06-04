@@ -15,17 +15,17 @@ public class DvdTest {
     }
 
     @Test
-    public void getStateShouldReturnAvailableForDvdWithoutRentals() {
+    public void getStateShouldReturnAvailableForDvdWithoutReservations() {
         assertEquals(dvd.getState(), DvdState.AVAILABLE);
     }
 
     @Test
-    public void getStateShouldReturnReservedForDvdWithReservation() {
+    public void getStateShouldReturnAvailableForDvdWithReservations() {
         DvdRental rental = new DvdRental();
         rental.setState(RentalState.RESERVED);
         dvd.addRental(rental);
 
-        assertEquals(dvd.getState(), DvdState.RESERVED);
+        assertEquals(dvd.getState(), DvdState.AVAILABLE);
     }
 
     @Test
@@ -35,18 +35,5 @@ public class DvdTest {
         dvd.addRental(rental);
 
         assertEquals(dvd.getState(), DvdState.RENTED);
-    }
-
-    @Test
-    public void getStateShouldReturnRentedAndReservedForDvdWhichIsRentedAndReserved() {
-        DvdRental rental = new DvdRental();
-        rental.setState(RentalState.RENTED);
-        dvd.addRental(rental);
-
-        rental = new DvdRental();
-        rental.setState(RentalState.RESERVED);
-        dvd.addRental(rental);
-
-        assertEquals(dvd.getState(), DvdState.RENTED_AND_RESERVED);
     }
 }

@@ -2,21 +2,25 @@ package pl.t32.dvdrental.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@NamedQuery(name="DvdRental.findByUser", query="select d from DvdRental d where d.customer = :customer")
+@NamedQueries({
+        @NamedQuery(name="DvdRental.findByUser", query="select d from DvdRental d where d.customer = :customer"),
+        @NamedQuery(name="DvdRental.getPendingRentals",
+                query="select d from DvdRental d where d.dvd = :dvd and (d.rentedSince > :now or d.rentedTo > :now)")
+})
+
 public class DvdRental implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date rentedSince;
+    private LocalDateTime rentedSince;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date rentedTo;
+    private LocalDateTime rentedTo;
 
     @ManyToOne
     private Dvd dvd;
@@ -35,19 +39,19 @@ public class DvdRental implements Serializable {
         this.id = id;
     }
 
-    public Date getRentedSince() {
+    public LocalDateTime getRentedSince() {
         return rentedSince;
     }
 
-    public void setRentedSince(Date rentedFrom) {
-        this.rentedSince = rentedFrom;
+    public void setRentedSince(LocalDateTime rentedSince) {
+        this.rentedSince = rentedSince;
     }
 
-    public Date getRentedTo() {
+    public LocalDateTime getRentedTo() {
         return rentedTo;
     }
 
-    public void setRentedTo(Date rentedTo) {
+    public void setRentedTo(LocalDateTime rentedTo) {
         this.rentedTo = rentedTo;
     }
 
@@ -75,15 +79,7 @@ public class DvdRental implements Serializable {
         this.state = state;
     }
 
-    public boolean canBeIssued() {
-        if (state == RentalState.RENTED || state == RentalState.RETURNED)
-            return false;
-        if (dvd.getState() == DvdState.AVAILABLE || dvd.getState() == DvdState.RESERVED)
-            return true;
-        return false;
-    }
-
-    public boolean canBeReturned() {
-        return state == RentalState.RENTED;
+    public boolean dateInRentalPeriod(LocalDateTime date) {
+        return rentedSince.isBefore(date) && rentedTo.isAfter(date);
     }
 }

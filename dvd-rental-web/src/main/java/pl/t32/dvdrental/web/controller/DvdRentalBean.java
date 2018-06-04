@@ -1,5 +1,6 @@
 package pl.t32.dvdrental.web.controller;
 
+
 import org.primefaces.context.RequestContext;
 import pl.t32.dvdrental.ejb.DvdDao;
 import pl.t32.dvdrental.ejb.DvdRentalDao;
@@ -14,12 +15,16 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Named
 @ViewScoped
 public class DvdRentalBean implements Serializable {
+
+    final static Logger logger = Logger.getLogger(DvdRentalBean.class.getName());
 
     @EJB
     private DvdRentalDao dao;
@@ -37,30 +42,46 @@ public class DvdRentalBean implements Serializable {
         newRental.setDvd(dvd);
     }
 
-    public boolean isRentalValid() {
-        Dvd dvd = newRental.getDvd();
-        if (newRental.getRentedSince().after(newRental.getRentedTo()))
+    public boolean areDatesValid() {
+        logger.info("Rented since " + newRental.getRentedSince());
+        logger.info("Rented to " + newRental.getRentedTo());
+        logger.info("Now " + LocalDateTime.now());
+        if (newRental.getRentedSince().isAfter(newRental.getRentedTo()))
             return false;
 
-        if ((new Date()).after(newRental.getRentedSince()))
+        if (LocalDateTime.now().isAfter(newRental.getRentedSince()))
             return false;
 
-        for (DvdRental rental : dvd.getRentals()) {
-            if (rental.getState() != RentalState.RETURNED && rental.getRentedTo().after(newRental.getRentedSince()))
-                return false;
-        }
         return true;
     }
 
+    public boolean isRentalCollision() {
+        Dvd dvd = newRental.getDvd();
+        return dvd.getRentals().stream().anyMatch(r -> r.getState() != RentalState.RETURNED &&
+                (r.dateInRentalPeriod(newRental.getRentedTo()) || r.dateInRentalPeriod(newRental.getRentedSince())
+                        || newRental.dateInRentalPeriod(r.getRentedSince())));
+    }
+
     public void onRentalAdded() {
-        newRental.setCustomer(userBean.getUser());
-        if (!isRentalValid()) {
-            JSF.addErrorMessage("Given dates are incorrect");
+        if (!newRental.getDvd().canUserRent(userBean.getUser())) {
+            JSF.addErrorMessage("You already rented this Dvd");
             return;
         }
-        newRental.getDvd().addRental(newRental);
+        if (!areDatesValid()) {
+            JSF.addErrorMessage("Rented since must be earlier than rented to, and later than now");
+            return;
+        }
+        if (isRentalCollision()) {
+            JSF.addErrorMessage("Given dates collide with existing reservations");
+            return;
+        }
+
+        newRental.setCustomer(userBean.getUser());
+        Dvd dvd = newRental.getDvd();
+        dvd.addRental(newRental);
         dao.save(newRental);
-        dvdDao.update(newRental.getDvd());
+        dvdDao.update(dvd);
+
         RequestContext.getCurrentInstance().execute("PF('RentalDlg').hide()");
     }
 
@@ -69,8 +90,15 @@ public class DvdRentalBean implements Serializable {
     }
 
     public void onRentalRemoved() {
+        if (newRental.getState() == RentalState.RENTED) {
+            JSF.addErrorMessage("You cannot delete issued order.");
+            return;
+        }
         dao.remove(newRental.getId());
-        newRental.getDvd().removeRental(newRental);
+        Dvd dvd = newRental.getDvd();
+        dvd.removeRental(newRental);
+        dvdDao.update(dvd);
+
         RequestContext.getCurrentInstance().execute("PF('RentalRemoveDlg').hide()");
     }
 
@@ -93,10 +121,31 @@ public class DvdRentalBean implements Serializable {
     public void issueDvd(DvdRental rental) {
         rental.setState(RentalState.RENTED);
         dao.update(rental);
+        dvdDao.update(rental.getDvd());
     }
 
     public void returnDvd(DvdRental rental) {
         rental.setState(RentalState.RETURNED);
         dao.update(rental);
+        dvdDao.update(rental.getDvd());
+    }
+
+    public List<DvdRental> getPendingRentals() {
+        if (newRental == null) return new ArrayList<>();
+        return dao.getPendingRentals(newRental.getDvd());
+    }
+
+    public boolean canBeIssued(DvdRental rental) {
+        Dvd dvd = rental.getDvd();
+        boolean isDvdRented = dvd.getRentals().stream().anyMatch(r -> r.getState() == RentalState.RENTED);
+        logger.info("isDvdRented " + isDvdRented);
+        if (isDvdRented)
+            return false;
+
+        return rental.dateInRentalPeriod(LocalDateTime.now()) && rental.getState() == RentalState.RESERVED;
+    }
+
+    public boolean canBeReturned(DvdRental rental) {
+        return rental.getState() == RentalState.RENTED;
     }
 }
