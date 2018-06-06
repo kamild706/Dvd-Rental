@@ -24,19 +24,19 @@ public class AuthFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String path = request.getRequestURI().substring(request.getContextPath().length());
-        if (path.startsWith("/restricted/")) {
-            if (!userBean.isLogged()) {
-                HttpServletResponse response = (HttpServletResponse) servletResponse;
-                response.sendRedirect(request.getContextPath() + "/login.xhtml");
-                return;
-            }
-        }
-        if (path.startsWith("/users/")) {
+        if (path.startsWith("/users/") || path.startsWith("/rentals/all_rentals")) {
             if (!userBean.isAdmin()) {
                 HttpServletResponse response = (HttpServletResponse) servletResponse;
                 response.sendRedirect(request.getContextPath() + "/rejected.html");
                 return;
             } else if (!userBean.isLogged()) {
+                HttpServletResponse response = (HttpServletResponse) servletResponse;
+                response.sendRedirect(request.getContextPath() + "/login.xhtml");
+                return;
+            }
+        }
+        if (path.startsWith("/rentals/my_rentals")) {
+            if (!userBean.isLogged()) {
                 HttpServletResponse response = (HttpServletResponse) servletResponse;
                 response.sendRedirect(request.getContextPath() + "/login.xhtml");
                 return;

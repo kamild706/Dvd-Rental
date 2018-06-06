@@ -2,7 +2,7 @@ package pl.t32.dvdrental.web.controller;
 
 import org.primefaces.context.RequestContext;
 import pl.t32.dvdrental.ejb.DvdDao;
-import pl.t32.dvdrental.model.*;
+import pl.t32.dvdrental.model.Dvd;
 
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;

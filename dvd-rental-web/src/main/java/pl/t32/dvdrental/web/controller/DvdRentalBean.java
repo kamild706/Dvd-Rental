@@ -4,6 +4,7 @@ package pl.t32.dvdrental.web.controller;
 import org.primefaces.context.RequestContext;
 import pl.t32.dvdrental.ejb.DvdDao;
 import pl.t32.dvdrental.ejb.DvdRentalDao;
+import pl.t32.dvdrental.ejb.MailSender;
 import pl.t32.dvdrental.model.Dvd;
 import pl.t32.dvdrental.model.DvdRental;
 import pl.t32.dvdrental.model.RentalState;
@@ -43,9 +44,6 @@ public class DvdRentalBean implements Serializable {
     }
 
     public boolean areDatesValid() {
-        logger.info("Rented since " + newRental.getRentedSince());
-        logger.info("Rented to " + newRental.getRentedTo());
-        logger.info("Now " + LocalDateTime.now());
         if (newRental.getRentedSince().isAfter(newRental.getRentedTo()))
             return false;
 
@@ -122,12 +120,14 @@ public class DvdRentalBean implements Serializable {
         rental.setState(RentalState.RENTED);
         dao.update(rental);
         dvdDao.update(rental.getDvd());
+        logger.fine("Dvd " + rental.getDvd() + " has been issued");
     }
 
     public void returnDvd(DvdRental rental) {
         rental.setState(RentalState.RETURNED);
         dao.update(rental);
         dvdDao.update(rental.getDvd());
+        logger.fine("Dvd" + rental.getDvd() + " has been returned");
     }
 
     public List<DvdRental> getPendingRentals() {
@@ -138,7 +138,6 @@ public class DvdRentalBean implements Serializable {
     public boolean canBeIssued(DvdRental rental) {
         Dvd dvd = rental.getDvd();
         boolean isDvdRented = dvd.getRentals().stream().anyMatch(r -> r.getState() == RentalState.RENTED);
-        logger.info("isDvdRented " + isDvdRented);
         if (isDvdRented)
             return false;
 

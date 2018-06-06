@@ -17,14 +17,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Named
 @ViewScoped
 public class LoginBean implements Serializable {
 
-    public static final Logger LOG = Logger.getLogger(LoginBean.class.getName());
+    public static final Logger logger = Logger.getLogger(LoginBean.class.getName());
 
     @Inject
     private UserBean userBean;
@@ -64,10 +63,10 @@ public class LoginBean implements Serializable {
         UserCredentials user = userCredentialsDao.findByUsernameAndPassword(username, password);
         if (user != null) {
             userBean.setUser(user);
-            LOG.info("User " + user.getUsername() + " logged in");
-            JSF.redirect("index.xhtml");
+            logger.fine("User " + user.getUsername() + " has logged in");
+            JSF.redirect("/");
         } else {
-            LOG.info("Login unsuccessful, wrong credentials provided");
+            logger.fine("Login unsuccessful, wrong credentials provided");
             JSF.addErrorMessage("Invalid credentials");
         }
     }
@@ -92,6 +91,6 @@ public class LoginBean implements Serializable {
 
     public void logout() throws IOException {
         JSF.invalidateSession();
-        JSF.redirect("index.xhtml");
+        JSF.redirect("/");
     }
 }

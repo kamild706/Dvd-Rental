@@ -24,6 +24,8 @@
         <p:link value="Sign up here" outcome="/signup.xhtml"/>
     </h:panelGroup>
     <h:outputText rendered="#{userBean.logged}" value="You are already logged in"/>
+    <p:link rendered="#{userBean.logged}" value="Back to dvds" outcome="/dvd/dvd_list.xhtml" />
+
 </h:body>
 </html>
 

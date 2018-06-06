@@ -1,6 +1,5 @@
 package pl.t32.dvdrental.web.controller;
 
-import org.primefaces.context.RequestContext;
 import pl.t32.dvdrental.ejb.UserCredentialsDao;
 import pl.t32.dvdrental.model.UserCredentials;
 import pl.t32.dvdrental.model.UserGroup;
@@ -16,7 +15,7 @@ import java.util.logging.Logger;
 @ViewScoped
 public class UserManageBean implements Serializable {
 
-    public static final Logger LOG = Logger.getLogger(UserManageBean.class.getName());
+    public static final Logger logger = Logger.getLogger(UserManageBean.class.getName());
 
     @EJB
     private UserCredentialsDao dao;
@@ -40,7 +39,7 @@ public class UserManageBean implements Serializable {
             group.setGroupname("ADMIN");
             uc.add(group);
 
-            LOG.info("User " + uc.getUsername() + " added to ADMIN group");
+            logger.fine("User " + uc.getUsername() + " added to ADMIN group");
         }
     }
 
@@ -54,6 +53,6 @@ public class UserManageBean implements Serializable {
         group.setGroupname("ADMIN");
         uc.remove(group);
 
-        LOG.info("User " + uc.getUsername() + " removed from ADMIN group");
+        logger.fine("User " + uc.getUsername() + " removed from ADMIN group");
     }
 }

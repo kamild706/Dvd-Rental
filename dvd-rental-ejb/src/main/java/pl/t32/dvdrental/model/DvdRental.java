@@ -7,9 +7,11 @@ import java.util.Date;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name="DvdRental.findByUser", query="select d from DvdRental d where d.customer = :customer"),
-        @NamedQuery(name="DvdRental.getPendingRentals",
-                query="select d from DvdRental d where d.dvd = :dvd and (d.rentedSince > :now or d.rentedTo > :now)")
+        @NamedQuery(name = "DvdRental.findByUser", query = "select d from DvdRental d where d.customer = :customer"),
+        @NamedQuery(name = "DvdRental.getPendingRentals",
+                query = "select d from DvdRental d where d.dvd = :dvd and (d.rentedSince > :now or d.rentedTo > :now)"),
+        @NamedQuery(name = "DvdRental.getExpiredRentals",
+                query = "select d from DvdRental d where d.rentedSince < :date and d.state = pl.t32.dvdrental.model.RentalState.RESERVED")
 })
 
 public class DvdRental implements Serializable {
@@ -81,5 +83,17 @@ public class DvdRental implements Serializable {
 
     public boolean dateInRentalPeriod(LocalDateTime date) {
         return rentedSince.isBefore(date) && rentedTo.isAfter(date);
+    }
+
+    @Override
+    public String toString() {
+        return "DvdRental{" +
+                "id=" + id +
+                ", rentedSince=" + rentedSince +
+                ", rentedTo=" + rentedTo +
+                ", dvd=" + dvd +
+                ", customer=" + customer +
+                ", state=" + state +
+                '}';
     }
 }

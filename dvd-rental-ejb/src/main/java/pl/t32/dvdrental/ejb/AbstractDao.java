@@ -1,7 +1,9 @@
 package pl.t32.dvdrental.ejb;
 
+import javax.ejb.Local;
 import java.util.List;
 
+@Local
 public interface AbstractDao<T, K> {
     void save(T t);
     void remove (K id);

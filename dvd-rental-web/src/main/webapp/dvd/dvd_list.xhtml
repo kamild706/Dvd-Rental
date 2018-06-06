@@ -53,8 +53,15 @@
         <p:commandButton rendered="#{userBean.isAdmin()}" value="Add dvd" action="#{dvdBean.onDvdAdd()}"
                          oncomplete="PF('DvdDlg').show()" update=":DvdDlgId"/>
     </h:form>
-    <p:link rendered="#{userBean.admin}" value="Link to Admin page" outcome="/users/users_list.xhtml"/>
-
+    <div>
+        <p:link rendered="#{userBean.admin}" value="Browse users" outcome="/users/users_list.xhtml"/>
+    </div>
+    <div>
+        <p:link rendered="#{userBean.admin}" value="Browse all rentals" outcome="/rentals/all_rentals.xhtml"/>
+    </div>
+    <div>
+        <p:link rendered="#{userBean.logged}" value="Browse my rentals" outcome="/rentals/my_rentals.xhtml"/>
+    </div>
     <p:dialog id="DvdDlgId" widgetVar="DvdDlg" dynamic="true" modal="true">
         <h:form>
             <p:panelGrid columns="2">

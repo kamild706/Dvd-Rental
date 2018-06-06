@@ -32,7 +32,7 @@
             </p:column>
         </p:dataTable>
     </h:form>
-    <h:outputText rendered="#{!userBean.logged}" value="You must be logged in"/>
+    <p:link value="Back to dvds" outcome="/dvd/dvd_list.xhtml" />
 
     <p:dialog id="RentalRemoveId" widgetVar="RentalRemoveDlg" dynamic="true" modal="true">
         <h:form>

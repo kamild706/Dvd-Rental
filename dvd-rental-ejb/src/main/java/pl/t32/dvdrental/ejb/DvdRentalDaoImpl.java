@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Stateless
 public class DvdRentalDaoImpl extends AbstractDaoImpl<DvdRental, Long> implements DvdRentalDao {
@@ -29,6 +30,13 @@ public class DvdRentalDaoImpl extends AbstractDaoImpl<DvdRental, Long> implement
         TypedQuery<DvdRental> query = em.createNamedQuery("DvdRental.getPendingRentals", DvdRental.class);
         query.setParameter("dvd", dvd);
         query.setParameter("now", LocalDateTime.now());
+        return query.getResultList();
+    }
+
+    @Override
+    public List<DvdRental> getExpiredRentals() {
+        TypedQuery<DvdRental> query = em.createNamedQuery("DvdRental.getExpiredRentals", DvdRental.class);
+        query.setParameter("date", LocalDateTime.now().minusMinutes(3));
         return query.getResultList();
     }
 }
