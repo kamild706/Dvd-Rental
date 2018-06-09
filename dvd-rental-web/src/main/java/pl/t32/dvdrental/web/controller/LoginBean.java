@@ -6,7 +6,7 @@
 package pl.t32.dvdrental.web.controller;
 
 
-import pl.t32.dvdrental.ejb.UserCredentialsDao;
+import pl.t32.dvdrental.ejb.dao.UserCredentialsDao;
 import pl.t32.dvdrental.model.UserCredentials;
 import pl.t32.dvdrental.model.UserGroup;
 import pl.t32.dvdrental.web.util.JSF;

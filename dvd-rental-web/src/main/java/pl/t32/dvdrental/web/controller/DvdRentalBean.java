@@ -2,9 +2,8 @@ package pl.t32.dvdrental.web.controller;
 
 
 import org.primefaces.context.RequestContext;
-import pl.t32.dvdrental.ejb.DvdDao;
-import pl.t32.dvdrental.ejb.DvdRentalDao;
-import pl.t32.dvdrental.ejb.MailSender;
+import pl.t32.dvdrental.ejb.dao.DvdDao;
+import pl.t32.dvdrental.ejb.dao.DvdRentalDao;
 import pl.t32.dvdrental.model.Dvd;
 import pl.t32.dvdrental.model.DvdRental;
 import pl.t32.dvdrental.model.RentalState;
@@ -56,21 +55,21 @@ public class DvdRentalBean implements Serializable {
     public boolean isRentalCollision() {
         Dvd dvd = newRental.getDvd();
         return dvd.getRentals().stream().anyMatch(r -> r.getState() != RentalState.RETURNED &&
-                (r.dateInRentalPeriod(newRental.getRentedTo()) || r.dateInRentalPeriod(newRental.getRentedSince())
-                        || newRental.dateInRentalPeriod(r.getRentedSince())));
+                (r.isDateInRentalPeriod(newRental.getRentedTo()) || r.isDateInRentalPeriod(newRental.getRentedSince())
+                        || newRental.isDateInRentalPeriod(r.getRentedSince())));
     }
 
     public void onRentalAdded() {
         if (!newRental.getDvd().canUserRent(userBean.getUser())) {
-            JSF.addErrorMessage("You already rented this Dvd");
+            JSF.addErrorMessage("Już wypożyczyłeś do DVD");
             return;
         }
         if (!areDatesValid()) {
-            JSF.addErrorMessage("Rented since must be earlier than rented to, and later than now");
+            JSF.addErrorMessage("Początek wypożyczenia musi wystąpić przed jego końcem; musi to być data z przyszłości");
             return;
         }
         if (isRentalCollision()) {
-            JSF.addErrorMessage("Given dates collide with existing reservations");
+            JSF.addErrorMessage("Wprowadzone daty nakładają się z istniejącymi rezerwacjami");
             return;
         }
 
@@ -89,7 +88,7 @@ public class DvdRentalBean implements Serializable {
 
     public void onRentalRemoved() {
         if (newRental.getState() == RentalState.RENTED) {
-            JSF.addErrorMessage("You cannot delete issued order.");
+            JSF.addErrorMessage("Nie możesz skasować zamówienia na wydane DVD");
             return;
         }
         dao.remove(newRental.getId());
@@ -141,7 +140,7 @@ public class DvdRentalBean implements Serializable {
         if (isDvdRented)
             return false;
 
-        return rental.dateInRentalPeriod(LocalDateTime.now()) && rental.getState() == RentalState.RESERVED;
+        return rental.isDateInRentalPeriod(LocalDateTime.now()) && rental.getState() == RentalState.RESERVED;
     }
 
     public boolean canBeReturned(DvdRental rental) {

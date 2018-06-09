@@ -1,4 +1,4 @@
-package pl.t32.dvdrental.ejb;
+package pl.t32.dvdrental.ejb.dao;
 
 import pl.t32.dvdrental.model.Dvd;
 

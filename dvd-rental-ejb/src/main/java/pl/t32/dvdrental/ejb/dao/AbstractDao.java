@@ -1,4 +1,4 @@
-package pl.t32.dvdrental.ejb;
+package pl.t32.dvdrental.ejb.dao;
 
 import javax.ejb.Local;
 import java.util.List;

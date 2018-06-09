@@ -1,16 +1,13 @@
-package pl.t32.dvdrental.ejb;
+package pl.t32.dvdrental.ejb.dao;
 
 import pl.t32.dvdrental.model.Dvd;
 import pl.t32.dvdrental.model.DvdRental;
 import pl.t32.dvdrental.model.UserCredentials;
 
 import javax.ejb.Stateless;
-import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Stateless
 public class DvdRentalDaoImpl extends AbstractDaoImpl<DvdRental, Long> implements DvdRentalDao {

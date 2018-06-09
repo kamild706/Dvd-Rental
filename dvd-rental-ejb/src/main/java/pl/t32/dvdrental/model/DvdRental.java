@@ -81,7 +81,7 @@ public class DvdRental implements Serializable {
         this.state = state;
     }
 
-    public boolean dateInRentalPeriod(LocalDateTime date) {
+    public boolean isDateInRentalPeriod(LocalDateTime date) {
         return rentedSince.isBefore(date) && rentedTo.isAfter(date);
     }
 

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.t32.dvdrental.ejb;
+package pl.t32.dvdrental.ejb.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

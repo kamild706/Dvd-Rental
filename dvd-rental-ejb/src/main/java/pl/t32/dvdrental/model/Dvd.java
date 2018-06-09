@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Entity
-@NamedQueries({
-        @NamedQuery(name = "Dvd.findAll", query = "select d from Dvd d"),
-//        @NamedQuery(name = "Dvd.isAvailable", query = "")
-})
 public class Dvd implements Serializable {
 
     @Id

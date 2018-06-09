@@ -1,5 +1,7 @@
 package pl.t32.dvdrental.ejb;
 
+import pl.t32.dvdrental.ejb.dao.DvdDao;
+import pl.t32.dvdrental.ejb.dao.DvdRentalDao;
 import pl.t32.dvdrental.model.Dvd;
 import pl.t32.dvdrental.model.DvdRental;
 import pl.t32.dvdrental.model.DvdState;

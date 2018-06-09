@@ -6,40 +6,41 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Facelet Title</title>
+    <title>Moje wypożyczenia</title>
 </h:head>
 <h:body>
     <h:form id="rentalsForm" rendered="#{userBean.logged}">
         <p:growl id="growl" showDetail="true"/>
         <p:dataTable id="rentalTable" value="#{dvdRentalBean.getUserRentals(userBean.user)}" var="rental">
-            <p:column headerText="Movie title">
+            <p:column headerText="Tytuł filmu">
                 #{rental.dvd.title}
             </p:column>
-            <p:column headerText="Rented since">
+            <p:column headerText="Data początku">
                 #{rental.rentedSince}
             </p:column>
-            <p:column headerText="Rented to">
+            <p:column headerText="Data końca">
                 #{rental.rentedTo}
             </p:column>
-            <p:column headerText="State">
+            <p:column headerText="Status">
                 #{rental.state}
             </p:column>
-            <p:column headerText="Remove">
+            <p:column headerText="Usuń">
                 <p:commandButton rendered="#{rental.getState() == 'RESERVED'}" icon="ui-icon-trash" title="Remove"
                                  action="#{dvdRentalBean.onRentalRemove(rental)}"
                                  oncomplete="PF('RentalRemoveDlg').show()" update="RentalRemoveId"/>
-                <h:outputText rendered="#{rental.getState() == 'RENTED'}" value="You cannot delete rented Dvd"/>
+                <h:outputText rendered="#{rental.getState() == 'RENTED'}"
+                              value="Dvd jest wypożyczone, nie możesz więc usunąć zamówienia"/>
             </p:column>
         </p:dataTable>
     </h:form>
-    <p:link value="Back to dvds" outcome="/dvd/dvd_list.xhtml" />
+    <p:link value="Powrót do listy filmów" outcome="/dvd/dvd_list.xhtml"/>
 
     <p:dialog id="RentalRemoveId" widgetVar="RentalRemoveDlg" dynamic="true" modal="true">
         <h:form>
             <h:panelGroup layout="block">
-                <h:outputText value="Do you want to delete this?"/>
-                <p:commandButton value="Cancel" type="button" onclick="PF('RentalRemoveDlg').hide()"/>
-                <p:commandButton value="Ok" action="#{dvdRentalBean.onRentalRemoved}"
+                <h:outputText value="na pewno chcesz usunąć tę pozycję?"/>
+                <p:commandButton value="Nie" type="button" onclick="PF('RentalRemoveDlg').hide()"/>
+                <p:commandButton value="Tak" action="#{dvdRentalBean.onRentalRemoved}"
                                  update=":rentalsForm:growl :rentalsForm:rentalTable"/>
             </h:panelGroup>
         </h:form>

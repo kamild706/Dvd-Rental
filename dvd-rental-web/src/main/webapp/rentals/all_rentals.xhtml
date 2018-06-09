@@ -6,52 +6,52 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Facelet Title</title>
+    <title>Wszystkie wypożyczenia</title>
 </h:head>
 <h:body>
     <h:form id="rentalsForm" rendered="#{userBean.admin}">
         <p:growl id="growl" showDetail="true"/>
         <p:dataTable id="rentalTable" value="#{dvdRentalBean.getRentals()}" var="rental">
-            <p:column headerText="Movie title">
+            <p:column headerText="Tytuł filmu">
                 #{rental.dvd.title}
             </p:column>
-            <p:column headerText="Rented since">
+            <p:column headerText="Data początku">
                 #{rental.rentedSince}
             </p:column>
-            <p:column headerText="Rented to">
+            <p:column headerText="Data końca">
                 #{rental.rentedTo}
             </p:column>
-            <p:column headerText="Customer">
+            <p:column headerText="Klient">
                 #{rental.customer.username}
             </p:column>
-            <p:column headerText="State">
+            <p:column headerText="Status">
                 #{rental.state}
             </p:column>
-            <p:column headerText="Manage">
-                <p:commandButton rendered="#{dvdRentalBean.canBeIssued(rental)}" value="Issue Dvd" title="Issue"
+            <p:column headerText="Zarządzaj">
+                <p:commandButton rendered="#{dvdRentalBean.canBeIssued(rental)}" value="Wydaj DVD" title="Issue"
                                  action="#{dvdRentalBean.issueDvd(rental)}"
                                  update=":rentalsForm:growl :rentalsForm:rentalTable"/>
-                <p:commandButton rendered="#{dvdRentalBean.canBeReturned(rental)}" value="Return Dvd" title="Return"
+                <p:commandButton rendered="#{dvdRentalBean.canBeReturned(rental)}" value="Zwróć DVD" title="Return"
                                  action="#{dvdRentalBean.returnDvd(rental)}"
                                  update=":rentalsForm:growl :rentalsForm:rentalTable"/>
                 <h:outputText rendered="#{!dvdRentalBean.canBeReturned(rental) and !dvdRentalBean.canBeIssued(rental)}"
-                              value="This order cannot be realised now"/>
+                              value="To zamówienie nie może być teraz zrealizowane"/>
             </p:column>
-            <p:column headerText="Remove">
+            <p:column headerText="Usuń">
                 <p:commandButton icon="ui-icon-trash" title="Remove" action="#{dvdRentalBean.onRentalRemove(rental)}"
                                  oncomplete="PF('RentalRemoveDlg').show()" update="RentalRemoveId"/>
 
             </p:column>
         </p:dataTable>
     </h:form>
-    <p:link value="Back to dvds" outcome="/dvd/dvd_list.xhtml" />
+    <p:link value="Powróć do listy filmów" outcome="/dvd/dvd_list.xhtml" />
 
     <p:dialog id="RentalRemoveId" widgetVar="RentalRemoveDlg" dynamic="true" modal="true">
         <h:form>
             <h:panelGroup layout="block">
-                <h:outputText value="Do you want to delete this?"/>
-                <p:commandButton value="Cancel" type="button" onclick="PF('RentalRemoveDlg').hide()"/>
-                <p:commandButton value="Ok" action="#{dvdRentalBean.onRentalRemoved}"
+                <h:outputText value="Napewno chcesz usunąć tę pozycję?"/>
+                <p:commandButton value="Nie" type="button" onclick="PF('RentalRemoveDlg').hide()"/>
+                <p:commandButton value="Tak" action="#{dvdRentalBean.onRentalRemoved}"
                                  update=":rentalsForm:growl :rentalsForm:rentalTable"/>
             </h:panelGroup>
         </h:form>
