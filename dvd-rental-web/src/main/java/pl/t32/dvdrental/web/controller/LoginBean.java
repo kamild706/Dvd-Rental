@@ -6,6 +6,7 @@
 package pl.t32.dvdrental.web.controller;
 
 
+import pl.t32.dvdrental.ejb.MailSender;
 import pl.t32.dvdrental.ejb.dao.UserCredentialsDao;
 import pl.t32.dvdrental.model.UserCredentials;
 import pl.t32.dvdrental.model.UserGroup;
@@ -27,6 +28,9 @@ public class LoginBean implements Serializable {
 
     @Inject
     private UserBean userBean;
+
+    @EJB
+    private MailSender mailSender;
 
     @EJB
     private UserCredentialsDao userCredentialsDao;
@@ -83,6 +87,7 @@ public class LoginBean implements Serializable {
             user.add(group);
 
             userCredentialsDao.save(user);
+            sendConfirmationEmail(user);
             login();
         } else {
             JSF.addErrorMessage("This username is taken");
@@ -92,5 +97,14 @@ public class LoginBean implements Serializable {
     public void logout() throws IOException {
         JSF.invalidateSession();
         JSF.redirect("/");
+    }
+
+    private void sendConfirmationEmail(UserCredentials user) {
+        String email = user.getEmail();
+        String message =
+                "Twoje konto " + user.getUsername() + " zostało pomyślnie zarezerwowane";
+        String title = "Witaj w Wypożyczalni";
+
+        mailSender.sendMail(email, title, message);
     }
 }

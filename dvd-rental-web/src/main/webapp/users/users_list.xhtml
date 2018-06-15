@@ -18,10 +18,6 @@
             <p:column headerText="Email">
                 #{user.email}
             </p:column>
-            <p:column headerText="Usuń">
-                <p:commandButton icon="ui-icon-trash" title="Remove" action="#{userManageBean.onRemoveUser(user)}"
-                                 update="userTable"/>
-            </p:column>
             <p:column headerText="Uprawnienia administratora">
                 <p:commandButton rendered="#{!user.isAdmin()}" title="Nadaj uprawnienia"
                                  action="#{userManageBean.handleAddAdminPrivileges(user)}" update="userTable"/>

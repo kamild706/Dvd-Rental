@@ -33,7 +33,7 @@ public class DvdRentalDaoImpl extends AbstractDaoImpl<DvdRental, Long> implement
     @Override
     public List<DvdRental> getExpiredRentals() {
         TypedQuery<DvdRental> query = em.createNamedQuery("DvdRental.getExpiredRentals", DvdRental.class);
-        query.setParameter("date", LocalDateTime.now().minusMinutes(3));
+        query.setParameter("date", LocalDateTime.now().minusHours(1));
         return query.getResultList();
     }
 }

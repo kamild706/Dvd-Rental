@@ -42,7 +42,7 @@ public class LocalDateTimeConverter implements Converter {
             return ZonedDateTime.parse(submittedValue, getFormatter(context, component))
                     .withZoneSameInstant(ZoneOffset.ofTotalSeconds(2 * 60 * 60)).toLocalDateTime();
         } catch (DateTimeParseException e) {
-            throw new ConverterException(new FacesMessage(submittedValue + " is not a valid local date time"), e);
+            throw new ConverterException(new FacesMessage(submittedValue + "Wymagany format to dd/mm/yy hh:mm"), e);
         }
     }
 

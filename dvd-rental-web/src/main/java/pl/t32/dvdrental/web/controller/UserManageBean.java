@@ -24,10 +24,6 @@ public class UserManageBean implements Serializable {
         return dao.findAll();
     }
 
-    public void onRemoveUser(UserCredentials uc) {
-        dao.remove(uc.getId());
-    }
-
     public void handleAddAdminPrivileges(UserCredentials uc) {
         addAdminPrivileges(uc);
         dao.update(uc);
